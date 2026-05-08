@@ -19,31 +19,21 @@ public class JournalEntryController {
     private JournalEntryService journalEntryService;
 
     // Create Journal
-    @PostMapping
-    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry journalEntry) {
-        journalEntry.setDate(LocalDateTime.now());
-
-        journalEntry.setDate(LocalDateTime.now());
-        JournalEntry journal = journalEntryService.saveEntry(journalEntry);
-        return ResponseEntity.status(HttpStatus.CREATED).body(journal);
+    @PostMapping("/{username}")
+    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry journalEntry, @PathVariable String username) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(journalEntryService.saveEntry(journalEntry,username));
     }
 
     // Find Journal By ObjectId
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<JournalEntry>> findEntryById(@PathVariable ObjectId id) {
-        Optional<JournalEntry> journal = journalEntryService.findEntry(id);
-
-        if (journal.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(journal);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(journal);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(journalEntryService.findEntry(id));
     }
 
     // Find All Journals
-    @GetMapping()
-    public ResponseEntity<List<JournalEntry>> findAllEntries() {
-        List<JournalEntry> journals = journalEntryService.findEntries();
+    @GetMapping("/{username}")
+    public ResponseEntity<List<JournalEntry>> findAllEntries(@PathVariable String username) {
+        List<JournalEntry> journals = journalEntryService.findEntries(username);
 
         if (journals.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(journals);
@@ -53,9 +43,9 @@ public class JournalEntryController {
     }
 
     // Delete Journal By ObjectId
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteEntryById(@PathVariable ObjectId id) {
-        boolean isDeleted = journalEntryService.deleteEntry(id);
+    @DeleteMapping("/{username}/{id}")
+    public ResponseEntity<String> deleteEntryById(@PathVariable ObjectId id, @PathVariable String username) {
+        boolean isDeleted = journalEntryService.deleteEntry(id,username);
 
         if (isDeleted) {
             return ResponseEntity.status(HttpStatus.OK)
@@ -81,7 +71,7 @@ public class JournalEntryController {
         JournalEntry journal = oldJournal.get();
 
         // Title Validation
-        if (newJournal.getTitle() != null && !newJournal.getTitle().isEmpty()) {
+        if (!newJournal.getTitle().isEmpty()) {
             journal.setTitle(newJournal.getTitle());
         }
 
