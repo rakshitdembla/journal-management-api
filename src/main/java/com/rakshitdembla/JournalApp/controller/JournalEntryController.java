@@ -1,5 +1,6 @@
 package com.rakshitdembla.JournalApp.controller;
 import com.rakshitdembla.JournalApp.entity.JournalEntry;
+import com.rakshitdembla.JournalApp.repository.UserEntryRepository;
 import com.rakshitdembla.JournalApp.service.JournalEntryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +17,8 @@ public class JournalEntryController {
 
     @Autowired
     private JournalEntryService journalEntryService;
+    @Autowired
+    private UserEntryRepository userEntryRepository;
 
     // Create Journal
     @PostMapping("/{username}")
@@ -31,13 +33,9 @@ public class JournalEntryController {
     }
 
     // Find All Journals
-    @GetMapping("/{username}")
+    @GetMapping("/all/{username}")
     public ResponseEntity<List<JournalEntry>> findAllEntries(@PathVariable String username) {
-        List<JournalEntry> journals = journalEntryService.findEntries(username);
-
-        if (journals.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(journals);
-        }
+        List<JournalEntry> journals = userEntryRepository.findByUsername(username).get().getJournals();
 
         return ResponseEntity.status(HttpStatus.OK).body(journals);
     }

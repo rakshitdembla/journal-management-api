@@ -1,6 +1,7 @@
 package com.rakshitdembla.JournalApp.entity;
 import com.mongodb.lang.NonNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Document(collection = "users")
 @Data
+@NoArgsConstructor
 public class UserEntry {
     @Id
     private ObjectId id;

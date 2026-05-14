@@ -5,11 +5,10 @@ import com.rakshitdembla.JournalApp.exception.AppException;
 import com.rakshitdembla.JournalApp.repository.UserEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.stereotype.Component;
-
+import org.springframework.stereotype.Service;
 import java.util.Optional;
 
-@Component
+@Service
 public class UserEntryService {
 
     @Autowired
