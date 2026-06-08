@@ -23,11 +23,14 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/journal/**").authenticated().anyRequest().permitAll()
+                        .requestMatchers("/journal/**","/user/**").authenticated().anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .defaultSuccessUrl("/home", true)
                 ).httpBasic(Customizer.withDefaults());
+
+        http
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
