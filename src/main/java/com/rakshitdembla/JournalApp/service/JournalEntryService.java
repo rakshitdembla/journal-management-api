@@ -6,13 +6,11 @@ import com.rakshitdembla.JournalApp.repository.JournalEntryRepository;
 import com.rakshitdembla.JournalApp.repository.UserEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class JournalEntryService {
@@ -23,9 +21,21 @@ public class JournalEntryService {
     @Autowired
     private UserEntryRepository userEntryRepository;
 
+    @Autowired
+    private UserEntryService userEntryService;
+
     // Save Journal Entry
-    @Transactional
     public JournalEntry saveEntry(JournalEntry journalEntry, String username) {
+        try {
+            return saveJournal(journalEntry,username);
+        }
+        catch(Exception e) {
+            throw new AppException(500,e.getMessage());
+        }
+    }
+
+    @Transactional
+    private JournalEntry saveJournal(JournalEntry journalEntry, String username) {
         journalEntry.setDate(LocalDateTime.now());
 
         JournalEntry journal = journalEntryRepository.save(journalEntry);
@@ -42,22 +52,62 @@ public class JournalEntryService {
     }
 
     // Find Entry By ObjectID
-    public Optional<JournalEntry> findEntry(ObjectId id) {
-        return journalEntryRepository.findById(id);
+    public JournalEntry findEntry(ObjectId id,String username) {
+        UserEntry user = userEntryService.findByUsername(username);
+
+        try {
+            for (JournalEntry j : user.getJournals()) {
+                if (j.getId().equals(id)) return j;
+            }
+
+            throw new AppException(404,"Journal not found");
+        }
+        catch (AppException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            throw new AppException(500,e.getMessage());
+        }
     }
 
     // Find All Entries
     public List<JournalEntry> findEntries(String username) {
-        return userEntryRepository.findByUsername(username).orElseThrow().getJournals();
+        try {
+            UserEntry user = userEntryService.findByUsername(username);
+            return user.getJournals();
+        } catch (Exception e) {
+            throw new AppException(500,e.getMessage());
+        }
     }
 
     // Delete Entry By ObjectID
     public boolean deleteEntry(ObjectId id, String username) {
+        try {
+            boolean isDeleted = deleteJournal(id,username);
+
+            if (isDeleted) return true;
+            throw new AppException(404,"Journal not found");
+        }
+        catch (AppException e) {
+            throw  e;
+        }
+        catch (Exception e) {
+            throw new AppException(500,e.getMessage());
+        }
+    }
+
+    @Transactional
+    private boolean deleteJournal(ObjectId id, String username) {
         UserEntry user = userEntryRepository.findByUsername(username).get();
         journalEntryRepository.deleteById(id);
 
+        int beforeSize = user.getJournals().size();
+
         user.getJournals().removeIf(e -> e.getId().equals(id));
         userEntryRepository.save(user);
-        return true;
+
+        int afterSize = user.getJournals().size();
+
+        return beforeSize != afterSize;
     }
 }

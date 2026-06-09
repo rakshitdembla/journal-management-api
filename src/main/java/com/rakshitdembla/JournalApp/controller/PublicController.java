@@ -1,9 +1,7 @@
 package com.rakshitdembla.JournalApp.controller;
-
 import com.rakshitdembla.JournalApp.entity.ErrorEntity;
 import com.rakshitdembla.JournalApp.entity.UserEntry;
 import com.rakshitdembla.JournalApp.exception.AppException;
-import com.rakshitdembla.JournalApp.repository.UserEntryRepository;
 import com.rakshitdembla.JournalApp.service.UserEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -5,7 +5,6 @@ import com.rakshitdembla.JournalApp.exception.AppException;
 import com.rakshitdembla.JournalApp.repository.UserEntryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -60,17 +59,35 @@ public class UserEntryService {
     // Update username
     public UserEntry updateUsername(String username, String newUsername) {
 
+        try {
+            UserEntry user = findByUsername(username);
+
+            Optional<UserEntry> existingUser =
+                    userEntryRepository.findByUsername(newUsername);
+
+            if (existingUser.isPresent()) {
+                throw new AppException(409, "Username already exists");
+            }
+
+            user.setUsername(newUsername);
+
+            return userEntryRepository.save(user);
+        } catch (AppException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AppException(500, e.getMessage());
+        }
+    }
+
+    // Delete User
+    public boolean deleteUserByUsername(String username) {
         UserEntry user = findByUsername(username);
 
-        Optional<UserEntry> existingUser =
-                userEntryRepository.findByUsername(newUsername);
-
-        if (existingUser.isPresent()) {
-            throw new AppException(409, "Username already exists");
+        try {
+            userEntryRepository.deleteByUsername(username);
+            return true;
+        } catch (Exception e) {
+            throw new AppException(500, e.getMessage());
         }
-
-        user.setUsername(newUsername);
-
-        return userEntryRepository.save(user);
     }
 }
