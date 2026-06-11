@@ -23,7 +23,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/journal/**","/user/**").authenticated().anyRequest().permitAll()
+                        .requestMatchers("/journal/**","/user/**").authenticated().requestMatchers("/admin/**").hasRole("ADMIN").anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .defaultSuccessUrl("/home", true)
@@ -36,11 +36,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public AuthenticationProvider authenticationProvider(
             PasswordEncoder passwordEncoder) {
 
@@ -50,5 +45,11 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder);
 
         return provider;
+    }
+
+    // Utility class for password encoding
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
