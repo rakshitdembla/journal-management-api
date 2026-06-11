@@ -43,23 +43,23 @@ public class JournalEntryService {
 
         user.getJournals().add(journal);
         userEntryRepository.save(user);
-        return journalEntry;
+        return journal;
     }
 
     // Update Journal Entry
     public JournalEntry updateEntry(JournalEntry journalEntry,String username) {
         try {
             UserEntry user = userEntryService.findByUsername(username);
-            JournalEntry journal = null;
+            JournalEntry existing = null;
 
             for (JournalEntry j : user.getJournals()) {
                 if (j.getId().equals(journalEntry.getId())) {
-                    journal = j;
+                    existing = j;
                     break;
                 }
             }
 
-            if (journal == null) throw new AppException(404,"Journal not found");
+            if (existing == null) throw new AppException(404,"Journal not found");
             return journalEntryRepository.save(journalEntry);
         }
         catch (AppException e) {
@@ -117,7 +117,6 @@ public class JournalEntryService {
     @Transactional
     private boolean deleteJournal(ObjectId id, String username) {
         UserEntry user = userEntryRepository.findByUsername(username).get();
-        journalEntryRepository.deleteById(id);
 
         int beforeSize = user.getJournals().size();
 
@@ -126,6 +125,9 @@ public class JournalEntryService {
 
         int afterSize = user.getJournals().size();
 
-        return beforeSize != afterSize;
+        if (afterSize == beforeSize) return false;
+
+        journalEntryRepository.deleteById(id);
+        return true;
     }
 }
