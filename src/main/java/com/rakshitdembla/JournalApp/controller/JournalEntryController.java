@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -21,12 +20,12 @@ public class JournalEntryController {
 
     // Create Journal
     @PostMapping()
-    public ResponseEntity<?> createEntry(@RequestBody JournalEntry journalEntry) {
+    public ResponseEntity<?> createEntry(@RequestBody JournalEntry journalEntry,
+                                         Authentication authentication) {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
+            String username = authentication.getName();
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(journalEntryService.saveEntry(journalEntry,username));
+            return ResponseEntity.status(HttpStatus.CREATED).body(journalEntryService.saveEntry(journalEntry, username));
         }
         catch(AppException e) {
             return ResponseEntity.status(e.getStatus()).body(new ErrorEntity(e.getMessage()));
@@ -35,12 +34,12 @@ public class JournalEntryController {
 
     // Find Journal By ObjectId
     @GetMapping("/{id}")
-    public ResponseEntity<?> findEntryById(@PathVariable ObjectId id) {
+    public ResponseEntity<?> findEntryById(@PathVariable ObjectId id,
+                                           Authentication authentication) {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
+            String username = authentication.getName();
 
-            return ResponseEntity.status(HttpStatus.OK).body(journalEntryService.findEntry(id,username));
+            return ResponseEntity.status(HttpStatus.OK).body(journalEntryService.findEntry(id, username));
         }
         catch(AppException e) {
             return ResponseEntity.status(e.getStatus()).body(new ErrorEntity(e.getMessage()));
@@ -49,10 +48,9 @@ public class JournalEntryController {
 
     // Find All Journals
     @GetMapping("/all")
-    public ResponseEntity<?> findAllEntries() {
+    public ResponseEntity<?> findAllEntries(Authentication authentication) {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
+            String username = authentication.getName();
 
             List<JournalEntry> journals = journalEntryService.findEntries(username);
             return ResponseEntity.status(HttpStatus.OK).body(journals);
@@ -63,12 +61,12 @@ public class JournalEntryController {
 
     // Delete Journal By ObjectId
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteEntryById(@PathVariable ObjectId id) {
+    public ResponseEntity<?> deleteEntryById(@PathVariable ObjectId id,
+                                             Authentication authentication) {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
+            String username = authentication.getName();
 
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(journalEntryService.deleteEntry(id,username));
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(journalEntryService.deleteEntry(id, username));
 
         } catch (AppException e) {
             return ResponseEntity.status(e.getStatus()).body(new ErrorEntity(e.getMessage()));
@@ -78,14 +76,14 @@ public class JournalEntryController {
     // Update Journal By ObjectId
     @PatchMapping("{id}")
     public ResponseEntity<?> updateEntryById(@PathVariable ObjectId id,
-                                             @RequestBody JournalEntry newJournal) {
+                                             @RequestBody JournalEntry newJournal,
+                                             Authentication authentication) {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
+            String username = authentication.getName();
 
             newJournal.setId(id);
 
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(journalEntryService.updateEntry(newJournal,username));
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(journalEntryService.updateEntry(newJournal, username));
 
         } catch (AppException e) {
             return ResponseEntity.status(e.getStatus()).body(new ErrorEntity(e.getMessage()));

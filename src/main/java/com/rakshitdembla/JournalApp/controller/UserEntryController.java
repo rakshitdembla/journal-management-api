@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,10 +17,9 @@ public class UserEntryController {
     private UserEntryService userEntryService;
 
     @GetMapping()
-    public ResponseEntity<?> getUser() {
+    public ResponseEntity<?> getUser(Authentication authentication) {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
+            String username = authentication.getName();
 
             return ResponseEntity.status(HttpStatus.OK).body(userEntryService.findByUsername(username));
         } catch (AppException e) {
@@ -30,10 +28,10 @@ public class UserEntryController {
     }
 
     @PatchMapping("/{username}")
-    public ResponseEntity<?> updateUsername(@PathVariable String username) {
+    public ResponseEntity<?> updateUsername(@PathVariable String username,
+                                            Authentication authentication) {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String user = auth.getName();
+            String user = authentication.getName();
 
             return ResponseEntity.status(HttpStatus.OK).body(userEntryService.updateUsername(user, username));
         } catch (AppException e) {
@@ -42,10 +40,9 @@ public class UserEntryController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<?> deleteUser() {
+    public ResponseEntity<?> deleteUser(Authentication authentication) {
         try {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
+            String username = authentication.getName();
 
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(userEntryService.deleteUserByUsername(username));
         } catch (AppException e) {
