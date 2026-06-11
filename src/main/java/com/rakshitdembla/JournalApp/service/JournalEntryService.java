@@ -46,9 +46,27 @@ public class JournalEntryService {
         return journalEntry;
     }
 
-    // Save Journal Entry
-    public JournalEntry saveEntry(JournalEntry journalEntry) {
-        return journalEntryRepository.save(journalEntry);
+    // Update Journal Entry
+    public JournalEntry updateEntry(JournalEntry journalEntry,String username) {
+        try {
+            UserEntry user = userEntryService.findByUsername(username);
+            JournalEntry journal = null;
+
+            for (JournalEntry j : user.getJournals()) {
+                if (j.getId().equals(journalEntry.getId())) {
+                    journal = j;
+                    break;
+                }
+            }
+
+            if (journal == null) throw new AppException(404,"Journal not found");
+            return journalEntryRepository.save(journalEntry);
+        }
+        catch (AppException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AppException(500,e.getMessage());
+        }
     }
 
     // Find Entry By ObjectID

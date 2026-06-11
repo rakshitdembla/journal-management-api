@@ -75,31 +75,20 @@ public class JournalEntryController {
         }
     }
 
-//    // Update Journal By ObjectId
-//    @PatchMapping("{id}")
-//    public ResponseEntity<?> updateEntryById(@PathVariable ObjectId id,
-//                                             @RequestBody JournalEntry newJournal) {
-//
-//        Optional<JournalEntry> oldJournal = journalEntryService.findEntry(id);
-//
-//        if (oldJournal.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body("Journal entry not found.");
-//        }
-//
-//        JournalEntry journal = oldJournal.get();
-//
-//        // Title Validation
-//        if (!newJournal.getTitle().isEmpty()) {
-//            journal.setTitle(newJournal.getTitle());
-//        }
-//
-//        // Content Validation
-//        if (newJournal.getContent() != null && !newJournal.getContent().isEmpty()) {
-//            journal.setContent(newJournal.getContent());
-//        }
-//
-//        journalEntryService.saveEntry(journal);
-//        return ResponseEntity.status(HttpStatus.OK).body(journal);
-//    }
+    // Update Journal By ObjectId
+    @PatchMapping("{id}")
+    public ResponseEntity<?> updateEntryById(@PathVariable ObjectId id,
+                                             @RequestBody JournalEntry newJournal) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+
+            newJournal.setId(id);
+
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(journalEntryService.updateEntry(newJournal,username));
+
+        } catch (AppException e) {
+            return ResponseEntity.status(e.getStatus()).body(new ErrorEntity(e.getMessage()));
+        }
+    }
 }

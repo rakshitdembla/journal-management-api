@@ -26,7 +26,7 @@ public class UserEntryService {
             Optional<UserEntry> user = userEntryRepository.findByUsername(username);
 
             if (user.isPresent()) return user.get();
-            throw new AppException(400, "User not found");
+            throw new AppException(404, "User not found");
         } catch (AppException e) {
             throw e;
         } catch (Exception e) {
@@ -81,8 +81,6 @@ public class UserEntryService {
 
     // Delete User
     public boolean deleteUserByUsername(String username) {
-        UserEntry user = findByUsername(username);
-
         try {
             userEntryRepository.deleteByUsername(username);
             return true;
