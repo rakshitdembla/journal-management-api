@@ -4,8 +4,7 @@ import com.rakshitdembla.JournalApp.entity.UserEntry;
 import com.rakshitdembla.JournalApp.exception.AppException;
 import com.rakshitdembla.JournalApp.service.UserEntryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +16,7 @@ public class PublicController {
 
     @GetMapping("/health-check")
     public ResponseEntity<String> healthCheck() {
-        return ResponseEntity.status(HttpStatus.OK).body("Health - OK");
+        return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
 
     @PostMapping("/create-user")

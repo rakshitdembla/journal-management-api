@@ -3,12 +3,14 @@ package com.rakshitdembla.JournalApp.controller;
 import com.rakshitdembla.JournalApp.entity.ErrorEntity;
 import com.rakshitdembla.JournalApp.exception.AppException;
 import com.rakshitdembla.JournalApp.service.UserEntryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserEntryController {

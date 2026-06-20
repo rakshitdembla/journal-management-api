@@ -1,8 +1,11 @@
 spring:
-  application:
-    name: JournalApp
-  data :
-    mongodb:
-      uri: mongodb+srv://rakshitdembla:QEvn2qbbUGfAuJXE@cluster0.mr3lj.mongodb.net/
-      database: journaldb
-      auto-index-creation: true
+  profiles:
+    active: dev
+
+logging:
+  level:
+    root: INFO
+    com.rakshitdembla.JournalApp: TRACE
+
+api:
+  path: https://pokeapi.co/api/v2/pokemon/ditto
