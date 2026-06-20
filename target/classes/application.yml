@@ -6,6 +6,3 @@ logging:
   level:
     root: INFO
     com.rakshitdembla.JournalApp: TRACE
-
-api:
-  path: https://pokeapi.co/api/v2/pokemon/ditto

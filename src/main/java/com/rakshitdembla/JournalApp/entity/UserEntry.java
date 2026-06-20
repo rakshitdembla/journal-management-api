@@ -1,5 +1,6 @@
 package com.rakshitdembla.JournalApp.entity;
 import com.mongodb.lang.NonNull;
+import com.rakshitdembla.JournalApp.enums.Sentiment;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
@@ -29,4 +30,8 @@ public class UserEntry {
     private List<JournalEntry> journals = new ArrayList<>();
 
     private List<String> roles;
+
+    private boolean sentimentalAnalysis;
+
+    private Sentiment prevWeekSentiment;
 }

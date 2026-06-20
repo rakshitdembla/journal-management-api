@@ -1,6 +1,7 @@
 package com.rakshitdembla.JournalApp.entity;
 
 import com.mongodb.lang.NonNull;
+import com.rakshitdembla.JournalApp.enums.Sentiment;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -22,4 +23,6 @@ public class JournalEntry {
     private String content;
 
     private LocalDateTime date;
+
+    private Sentiment sentiment;
 }
