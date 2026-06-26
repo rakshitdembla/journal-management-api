@@ -53,8 +53,6 @@ public class UserScheduler {
 
             if (majoritySentiment != null) {
                 user.setPrevWeekSentiment(majoritySentiment);
-                // Log statement
-                System.out.println("Setting sentiment for : " + user.getUsername() + " as : " + majoritySentiment);
                 userEntryRepository.save(user);
             }
         }

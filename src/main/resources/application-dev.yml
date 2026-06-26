@@ -6,3 +6,11 @@ spring:
       uri: mongodb+srv://rakshitdembla:QEvn2qbbUGfAuJXE@cluster0.mr3lj.mongodb.net/
       database: journaldb
       auto-index-creation: true
+  redis :
+    host : 127.0.0.1
+    port : 6379
+
+logging:
+  level:
+    root: INFO
+    com.rakshitdembla.JournalApp: TRACE

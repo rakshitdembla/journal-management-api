@@ -1,6 +1,7 @@
 package com.rakshitdembla.JournalApp.entity;
 import com.mongodb.lang.NonNull;
 import com.rakshitdembla.JournalApp.enums.Sentiment;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
@@ -15,6 +16,7 @@ import java.util.List;
 @Document(collection = "users")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserEntry {
     @Id
     private ObjectId id;
