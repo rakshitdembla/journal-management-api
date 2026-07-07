@@ -45,17 +45,21 @@ public class PublicController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken( loginRequest.getUsername(),
-                loginRequest.getPassword()));
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken( loginRequest.getUsername(),
+                    loginRequest.getPassword()));
 
-        UserDetails userDetails =
-                (UserDetails) authentication.getPrincipal();
+            UserDetails userDetails =
+                    (UserDetails) authentication.getPrincipal();
 
-        Map<String, Object> claims = new HashMap<>();
+            Map<String, Object> claims = new HashMap<>();
 
-        String token =
-                jwtService.generateToken(userDetails, claims);
+            String token =
+                    jwtService.generateToken(userDetails, claims);
 
-        return ResponseEntity.status(HttpStatus.OK).body(token);
+            return ResponseEntity.status(HttpStatus.OK).body(token);
+        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorEntity(e.getMessage()));
+        }
     }
 }
